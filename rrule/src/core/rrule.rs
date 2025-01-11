@@ -277,6 +277,8 @@ pub struct RRule<Stage = Validated> {
     /// A phantom data to have the stage (unvalidated or validated).
     #[cfg_attr(feature = "serde", serde_as(as = "ignore"))]
     pub(crate) stage: PhantomData<Stage>,
+
+    pub(crate) dt_start: Option<DateTime<Tz>>,
 }
 
 impl Default for RRule<Unvalidated> {
@@ -300,6 +302,7 @@ impl Default for RRule<Unvalidated> {
             by_second: Vec::new(),
             by_easter: None,
             stage: PhantomData,
+            dt_start: None,
         }
     }
 }
@@ -429,6 +432,11 @@ impl RRule<Unvalidated> {
     #[must_use]
     pub fn by_second(mut self, by_second: Vec<u8>) -> Self {
         self.by_second = by_second;
+        self
+    }
+
+    pub fn by_dtstart(mut self, dt_start: DateTime<Tz>) -> Self {
+        self.dt_start = Some(dt_start);
         self
     }
 
@@ -595,6 +603,7 @@ impl RRule<Unvalidated> {
             by_minute: rrule.by_minute,
             by_second: rrule.by_second,
             by_easter: rrule.by_easter,
+            dt_start: Some(dt_start),
             stage: PhantomData,
         })
     }

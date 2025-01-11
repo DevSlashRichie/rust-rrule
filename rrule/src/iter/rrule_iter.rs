@@ -29,6 +29,8 @@ pub(crate) struct RRuleIter {
 
 impl RRuleIter {
     pub(crate) fn new(rrule: &RRule, dt_start: &chrono::DateTime<Tz>, limited: bool) -> Self {
+        let dt_start = &rrule.dt_start.unwrap_or_else(|| *dt_start);
+
         let ii = IterInfo::new(rrule, dt_start);
 
         let hour = get_hour(dt_start);

@@ -218,6 +218,7 @@ fn props_to_rrule(
         by_minute,
         by_second,
         by_easter,
+        dt_start: None,
         stage: PhantomData,
     })
 }
