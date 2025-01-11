@@ -33,7 +33,7 @@ fn issue_49() {
 
     let res = rrule_set.all(1).dates;
     assert!(!res.is_empty());
-    let res_str = format!("{}", res[0]);
+    let res_str = format!("{}", res[0].0);
     // Check that result datetime is not in UTC
     assert!(!res_str.contains("UTC"));
 }

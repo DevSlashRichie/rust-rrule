@@ -8,6 +8,7 @@ fn daylight_savings_1() {
             .unwrap();
 
     let dates = rrule.all_unchecked();
+
     check_occurrences(
         &dates,
         &[

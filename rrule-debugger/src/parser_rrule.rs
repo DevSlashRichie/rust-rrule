@@ -18,7 +18,13 @@ pub fn parse_rrule_from_string(rrule: &str) {
         Ok(rrule) => {
             println!("RRule data: {rrule:#?}");
             let result = rrule.all(50);
-            crate::print_all_datetimes(&result.dates);
+            crate::print_all_datetimes(
+                &result
+                    .dates
+                    .into_iter()
+                    .map(|(dt, _)| dt)
+                    .collect::<Vec<_>>(),
+            );
             if result.limited {
                 println!("RRule was limited");
             }

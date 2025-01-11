@@ -17,7 +17,7 @@ pub(super) fn collect_with_error<T>(
     limit: Option<u16>,
 ) -> RRuleResult
 where
-    T: Iterator<Item = chrono::DateTime<Tz>> + WasLimited,
+    T: Iterator<Item = (chrono::DateTime<Tz>, i64)> + WasLimited,
 {
     let mut list = vec![];
     let mut was_limited = false;
@@ -25,10 +25,10 @@ where
     // Once a limit is tripped it will break in the `None` case.
     while limit.is_none() || matches!(limit, Some(limit) if usize::from(limit) > list.len()) {
         if let Some(value) = iterator.next() {
-            if is_in_range(&value, start, end, inclusive) {
+            if is_in_range(&value.0, start, end, inclusive) {
                 list.push(value);
             }
-            if has_reached_the_end(&value, end, inclusive) {
+            if has_reached_the_end(&value.0, end, inclusive) {
                 // Date is after end date, so can stop iterating
                 break;
             }

@@ -15,6 +15,7 @@ fn daily_10_occurrences() {
         .unwrap()
         .all(u16::MAX)
         .dates;
+
     common::check_occurrences(
         &dates,
         &[
@@ -43,6 +44,7 @@ fn daily_until_november() {
         .unwrap()
         .all(u16::MAX)
         .dates;
+
     common::check_occurrences(
         &dates,
         &[

@@ -35,7 +35,8 @@ fn main() -> Result<(), String> {
     let rrule_str = opts.input.replace("\\n", "\n");
     let rrule: RRuleSet = parse_rule(&rrule_str)?;
     let rrule = rrule.limit();
-    let iter = rrule.into_iter();
+    let iter = rrule.into_iter().map(|(dt, _)| dt);
+
     iterator_dates(iter, limit);
 
     Ok(())

@@ -33,7 +33,7 @@ fn main() {
         let recurrences = rrule_set.exrule(exrule).all(10).dates;
 
         // Check that all the recurrences are on a Tuesday
-        for occurrence in &recurrences {
+        for (occurrence, _) in &recurrences {
             assert_eq!(occurrence.weekday(), Weekday::Tue);
         }
 

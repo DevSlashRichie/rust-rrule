@@ -13,7 +13,13 @@ pub fn rrule_from_bin(data: &[u8]) {
         Some(rule) => {
             println!("RRule data: {rule:#?}");
             let result = rule.all(50);
-            crate::print_all_datetimes(&result.dates);
+            crate::print_all_datetimes(
+                &result
+                    .dates
+                    .into_iter()
+                    .map(|(dt, _)| dt)
+                    .collect::<Vec<_>>(),
+            );
             if result.limited {
                 println!("RRule was limited");
             }

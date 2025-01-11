@@ -35,7 +35,7 @@ pub struct RRuleSet {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct RRuleResult {
     /// List of recurrences.
-    pub dates: Vec<DateTime<Tz>>,
+    pub dates: Vec<(DateTime<Tz>, i64)>,
     /// It is being true if the list of dates is limited.
     /// To indicate that it can potentially contain more dates.
     pub limited: bool,
@@ -208,7 +208,7 @@ impl RRuleSet {
     /// This method does not enforce any validation limits and might lead to
     /// very long iteration times. Please read the `SECURITY.md` for more information.
     #[must_use]
-    pub fn all_unchecked(self) -> Vec<DateTime<Tz>> {
+    pub fn all_unchecked(self) -> Vec<(DateTime<Tz>, i64)> {
         collect_with_error(self.into_iter(), &self.after, &self.before, true, None).dates
     }
 

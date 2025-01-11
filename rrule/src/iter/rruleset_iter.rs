@@ -109,7 +109,7 @@ impl RRuleSetIter {
 }
 
 impl Iterator for RRuleSetIter {
-    type Item = DateTime<Tz>;
+    type Item = (DateTime<Tz>, i64);
 
     fn next(&mut self) -> Option<Self::Item> {
         let mut next_date: Option<(usize, DateTime<Tz>)> = None;
@@ -178,25 +178,26 @@ impl Iterator for RRuleSetIter {
                             // Add previous date to its rrule queue
                             self.queue.insert(next_date.0, next_date.1);
 
-                            first_rdate
+                            Some((first_rdate, -1))
                         } else {
                             // add rdate back
                             self.rdates.push(first_rdate);
 
-                            next_date.1
+                            Some((next_date.1, next_date.0 as i64))
                         }
                     }
-                    None => first_rdate,
+                    None => Some((first_rdate, -1)),
                 };
-                Some(next_date)
+
+                next_date
             }
-            None => next_date.map(|d| d.1),
+            None => next_date.map(|(i, date)| (date, i as i64)),
         }
     }
 }
 
 impl IntoIterator for &RRuleSet {
-    type Item = DateTime<Tz>;
+    type Item = (DateTime<Tz>, i64);
 
     type IntoIter = RRuleSetIter;
 

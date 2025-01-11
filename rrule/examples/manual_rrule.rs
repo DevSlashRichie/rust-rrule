@@ -15,7 +15,7 @@ fn main() {
         .expect("RRule invalid");
 
     let recurrences = rrule_set.all_unchecked();
-    for (i, rec) in recurrences.iter().enumerate() {
+    for (i, (rec, _)) in recurrences.iter().enumerate() {
         assert_eq!(rec.year(), 2020);
         assert_eq!(rec.month(), 1);
         assert_eq!(rec.day(), 1 + i as u32);

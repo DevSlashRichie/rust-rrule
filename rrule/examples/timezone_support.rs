@@ -33,7 +33,7 @@ fn main() {
     // Convert to `chrono_tz::Tz`
     let _recurrences_in_moscow_tz: Vec<DateTime<chrono_tz::Tz>> = recurrences
         .iter()
-        .map(|d| d.with_timezone(&chrono_tz::Europe::Moscow))
+        .map(|(d, _)| d.with_timezone(&chrono_tz::Europe::Moscow))
         .collect();
 
     println!("Done, everything worked.");
