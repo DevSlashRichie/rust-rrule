@@ -778,6 +778,11 @@ impl<S> Display for RRule<S> {
 }
 
 impl<S> RRule<S> {
+    /// Get the start date of the recurrence.
+    pub fn get_dt_start(&self) -> Option<&DateTime<Tz>> {
+        self.dt_start.as_ref()
+    }
+
     /// Get the frequency of the recurrence.
     #[must_use]
     pub fn get_freq(&self) -> Frequency {
