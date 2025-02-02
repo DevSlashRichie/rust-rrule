@@ -8,6 +8,8 @@ use serde_with::{serde_as, DeserializeFromStr, SerializeDisplay};
 use std::fmt::Display;
 use std::str::FromStr;
 
+use super::utils::collect_with_error_and_doesnt_include_last;
+
 /// A validated Recurrence Rule that can be used to create an iterator.
 #[cfg_attr(feature = "serde", serde_as)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -197,6 +199,17 @@ impl RRuleSet {
             &self.after,
             &self.before,
             true,
+            Some(limit),
+        )
+    }
+
+    /// SAME AS `all` but doesn't include the last date.
+    pub fn all_but_not_includes_last(mut self, limit: u16) -> RRuleResult {
+        self.limited = true;
+        collect_with_error_and_doesnt_include_last(
+            self.into_iter(),
+            &self.after,
+            &self.before,
             Some(limit),
         )
     }

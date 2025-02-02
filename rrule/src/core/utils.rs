@@ -46,6 +46,46 @@ where
     }
 }
 
+/// Helper function to collect dates given some filters.
+///
+/// In the case where the iterator ended with errors, the error will be included,
+/// otherwise the second value of the return tuple will be `None`.
+pub(super) fn collect_with_error_and_doesnt_include_last<T>(
+    mut iterator: T,
+    start: &Option<chrono::DateTime<Tz>>,
+    end: &Option<chrono::DateTime<Tz>>,
+    limit: Option<u16>,
+) -> RRuleResult
+where
+    T: Iterator<Item = (chrono::DateTime<Tz>, i64)> + WasLimited,
+{
+    let mut list = vec![];
+    let mut was_limited = false;
+    // This loop should always end because `.next()` has build in limits
+    // Once a limit is tripped it will break in the `None` case.
+    while limit.is_none() || matches!(limit, Some(limit) if usize::from(limit) > list.len()) {
+        if let Some(value) = iterator.next() {
+            if is_in_range_but_normal(&value.0, start, end) {
+                list.push(value);
+            }
+            if has_reached_the_end_but_normal(&value.0, end) {
+                // Date is after end date, so can stop iterating
+                break;
+            }
+        } else {
+            was_limited = iterator.was_limited();
+            break;
+        }
+    }
+
+    was_limited = was_limited || matches!(limit, Some(limit) if usize::from(limit) == list.len());
+
+    RRuleResult {
+        dates: list,
+        limited: was_limited,
+    }
+}
+
 /// Checks if `date` is after `end`.
 fn has_reached_the_end(
     date: &chrono::DateTime<Tz>,
@@ -62,6 +102,17 @@ fn has_reached_the_end(
             Some(end) => !(Unbounded, Excluded(end)).contains(date),
             None => false,
         }
+    }
+}
+
+/// Checks if `date` is after `end`.
+fn has_reached_the_end_but_normal(
+    date: &chrono::DateTime<Tz>,
+    end: &Option<chrono::DateTime<Tz>>,
+) -> bool {
+    match end {
+        Some(end) => !(..end).contains(&date),
+        None => false,
     }
 }
 
@@ -87,6 +138,19 @@ pub(super) fn is_in_range(
             (None, Some(end)) => (Unbounded, Excluded(end)).contains(date),
             (None, None) => true,
         }
+    }
+}
+
+pub(super) fn is_in_range_but_normal(
+    date: &chrono::DateTime<Tz>,
+    start: &Option<chrono::DateTime<Tz>>,
+    end: &Option<chrono::DateTime<Tz>>,
+) -> bool {
+    match (start, end) {
+        (Some(start), Some(end)) => (start..end).contains(&date),
+        (Some(start), None) => (start..).contains(&date),
+        (None, Some(end)) => (..end).contains(&date),
+        (None, None) => true,
     }
 }
 
