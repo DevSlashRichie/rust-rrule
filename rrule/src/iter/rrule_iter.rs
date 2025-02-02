@@ -61,7 +61,7 @@ impl RRuleIter {
         buffer: &mut VecDeque<chrono::DateTime<Tz>>,
         dt_start: &chrono::DateTime<Tz>,
     ) -> bool {
-        if matches!(rrule.until, Some(until) if dt > until) {
+        if matches!(rrule.until, Some(until) if dt >= until) {
             // We can break because `pos_list` is sorted and
             // all the next dates will only be larger than `until`.
             return true;
